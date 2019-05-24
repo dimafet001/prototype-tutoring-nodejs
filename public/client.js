@@ -42,7 +42,14 @@ btnGoRoom.onclick = function() {
 socket.on("created", function(room) {
 	// caller gets user media devices with defined constraints
 	console.log("created");
-	navigator.mediaDevices.getUserMedia(streamConstraints).then((stream) => {
+
+	console.log(navigator)
+	console.log(navigator.mediaDevices);
+	navigator.getUserMedia = ( navigator.getUserMedia ||
+                       navigator.webkitGetUserMedia ||
+                       navigator.mozGetUserMedia ||
+                       navigator.msGetUserMedia);
+	navigator.getUserMedia(streamConstraints).then((stream) => {
 		
 		localStream = stream; // sets local stream to variable
 		localVideo.srcObject = stream;// shows stream to user

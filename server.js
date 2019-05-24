@@ -1,7 +1,8 @@
 const express = require("express");
 const app = express();
-var http = require('http').Server(app);
-var io = require("socket.io")(http);
+const fs = require("fs"); // file system core module
+var https = require('https');
+var io = require("socket.io")(https);
 
 // static hosting using express
 app.use(express.static("public"));
@@ -50,7 +51,17 @@ io.on("connection", (socket) => {
 
 });
 
+var webServer = https.createServer({
+    key:  fs.readFileSync(__dirname + "/certs/localhost.key"),
+    cert: fs.readFileSync(__dirname + "/certs/localhost.crt")
+}, app);
+
+app.get('/', function(request, response){
+    response.sendfile('index.html');
+});
+
 // listener
-http.listen(8080, "0.0.0.0", function() {
+// http.listen(8080, function() {
+webServer.listen(8080, "192.168.43.71", function() {
 	console.log("listening on *:8080");
 });
