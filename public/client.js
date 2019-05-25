@@ -40,16 +40,27 @@ btnGoRoom.onclick = function() {
 
 // when server emits created
 socket.on("created", function(room) {
-	// caller gets user media devices with defined constraints
+	
 	console.log("created");
 
-	console.log(navigator)
-	console.log(navigator.mediaDevices);
-	navigator.getUserMedia = ( navigator.getUserMedia ||
-                       navigator.webkitGetUserMedia ||
-                       navigator.mozGetUserMedia ||
-                       navigator.msGetUserMedia);
-	navigator.getUserMedia(streamConstraints).then((stream) => {
+	// console.log(navigator)
+	// console.log(navigator.mediaDevices);
+		// if (typeof navigator.mediaDevices.getUserMedia === 'undefined') {
+		//     navigator.getUserMedia({
+		//         audio: true
+		//     }, streamHandler, errorHandler);
+		// } else {
+		//     navigator.mediaDevices.getUserMedia({
+		//         audio: true
+		//     }).then(streamHandler).catch(errorHandler);
+		// }
+
+	// navigator.getUserMedia = ( navigator.getUserMedia ||
+ //                       navigator.webkitGetUserMedia ||
+ //                       navigator.mozGetUserMedia ||
+ //                       navigator.msGetUserMedia);
+ // caller gets user media devices with defined constraints
+	navigator.mediaDevices.getUserMedia(streamConstraints).then((stream) => {
 		
 		localStream = stream; // sets local stream to variable
 		localVideo.srcObject = stream;// shows stream to user
@@ -63,21 +74,27 @@ socket.on("created", function(room) {
 // when server emits joined
 socket.on("joined", (room)=>{
 	//calee gets user media devices
+	console.log("joined");
 	navigator.mediaDevices.getUserMedia(streamConstraints).then((stream)=> {
 		localStream = stream; // sets local stream to variable
 		localVideo.srcObject = stream;// shows stream to user
+		socket.emit('ready', roomNumber);
 		// localVideo.src = URL.createObjectURL(stream); // @Deprecated: does the same as the above line but doesn't work since mid/late 2018
 	}).catch((err)=> {
-		console.log("An errr ocurred when accessing media devices");
+		console.log("An error ocurred when accessing media devices");
 	});
+
+	// NEW CODE
+	// socket.emit('ready');
 });
 
 // when server emits ready
 socket.on("ready", () => {
 	console.log("ready");
 	if (isCaller) {
+		console.log("super ready");
 		// creates on RTCPeerConnection object
-		recPeerConnection = new RTCPeerConnection(iceServers);
+		rtcPeerConnection = new RTCPeerConnection(iceServers);
 	
 		// adds event listeners to the newly created object
 		rtcPeerConnection.onicecandidate = onIceCandidate;
@@ -94,29 +111,29 @@ socket.on("ready", () => {
 // when server emits offer
 socket.on("offer", (event) => {
 	console.log("offer");
-	if (isCaller) {
+	if (!isCaller) {
 		// creates an RTCPeerConnection object
-		RTCPeerConnection = new RTCPeerConnection(iceServers);
+		rtcPeerConnection = new RTCPeerConnection(iceServers);
 		
 		// adds event listeners to the newly created object
-		RTCPeerConnection.onicecandidate = onIceCandidate;
-		RTCPeerConnection.onaddstream = onAddStream;
+		rtcPeerConnection.onicecandidate = onIceCandidate;
+		rtcPeerConnection.onaddstream = onAddStream;
 
 		// ads the current local stream to the object
 		rtcPeerConnection.addStream(localStream);
 
 		// stores the offer as remote description
-		RTCPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+		rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
 
 		// Prepares an Answer
-		RTCPeerConnection.createAnswer(setLocalAndAnswer, (e)=>{console.log(e)});
+		rtcPeerConnection.createAnswer(setLocalAndAnswer, (e)=>{console.log(e)});
 	}
 });
 
 //when server emits answer
 socket.on("answer", (event) => {
 	// stores it as remote description
-	RTCPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
+	rtcPeerConnection.setRemoteDescription(new RTCSessionDescription(event));
 });
 
 // when server emits candidate
@@ -127,12 +144,12 @@ socket.on("candidate", (event) => {
 		candidate: event.candidate
 	});
 	// stores candidate
-	rtcPeerConncection.addIceCandidate(candidate);
+	rtcPeerConnection.addIceCandidate(candidate);
 });
 
 // when a user receives the other user's video and audio stream
 function onAddStream(event) {
-	remoteVideo.src = URLcreateObjectURL(event.stream);
+	remoteVideo.srcObject = event.stream;
 	remoteStream = event.stream;
 }
 
@@ -145,7 +162,7 @@ function onIceCandidate(event) {
 			type: "cadidate",
 			label: event.candidate.sdpMLineIndex,
 			id: event.candidate.sdpMid,
-			cadidate: event.candidate.candidate,
+			candidate: event.candidate.candidate,
 			room: roomNumber
 		})
 	}

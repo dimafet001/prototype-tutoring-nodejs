@@ -1,12 +1,37 @@
 const express = require("express");
-const app = express();
-const fs = require("fs"); // file system core module
-var https = require('https');
-var io = require("socket.io")(https);
+// var http 	  = require('http').Server(app);
+var https	  = require("https");
+
+var fs 		  = require("fs");
+const app	  = express();
 
 // static hosting using express
 app.use(express.static("public"));
+app.get('*', (req, res) => {
+	// console.log("I get smth")
+  	// res.send('hello world')
+    // res.sendFile(__dirname + '/public/index.htm');  
+})
 
+
+
+
+var server = https.createServer({
+    key: fs.readFileSync(__dirname + '/certs/server.key').toString(),
+	cert: fs.readFileSync(__dirname + '/certs/server.crt').toString() 
+	}, app)
+	.listen(8080, '192.168.0.15', () => {
+		console.log("running on 8080");
+	});
+
+
+// app.use(function(request, response){
+//   if(!request.secure){
+//     response.redirect("https://" + request.headers.host + request.url);
+//   }
+// });
+
+const io = require("socket.io")(server);
 //signaling handlers
 io.on("connection", (socket) => {
 	console.log("a user connected");
@@ -19,7 +44,7 @@ io.on("connection", (socket) => {
 
 		var myRoom = io.sockets.adapter.rooms[room] || { length: 0 };
 		var numClients = myRoom.length;
-		console.log(room, 'has', numClients, 'clients');
+		console.log(room, 'has before connection ', numClients, 'clients');
 
 		if (numClients == 0) {
 			socket.join(room);
@@ -34,34 +59,23 @@ io.on("connection", (socket) => {
 
 	// relay only handlers
 	socket.on("ready", (room) => {
-		socket.broadcast.to(room).emit("ready"); 
+		console.log("server ready")
+		socket.broadcast.to(room).emit("ready");
 	});
 
 	socket.on("candidate", (event) => {
-                socket.broadcast.to(event.room).emit("candidate", event);
-        });
+		console.log("server candidate")
+		socket.broadcast.to(event.room).emit("candidate", event);
+    });
 
 	socket.on("offer", (event) => {
-                socket.broadcast.to(event.room).emit("offer", event.sdp);
-        });
+		console.log("server offer")
+        socket.broadcast.to(event.room).emit("offer", event.sdp);
+    });
 
 	socket.on("answer", (event) => {
-                socket.broadcast.to(event.room).emit("answer", event.sdp);
-        });
+		console.log("server answer")
+		socket.broadcast.to(event.room).emit("answer", event.sdp);
+    });
 
-});
-
-var webServer = https.createServer({
-    key:  fs.readFileSync(__dirname + "/certs/localhost.key"),
-    cert: fs.readFileSync(__dirname + "/certs/localhost.crt")
-}, app);
-
-app.get('/', function(request, response){
-    response.sendfile('index.html');
-});
-
-// listener
-// http.listen(8080, function() {
-webServer.listen(8080, "192.168.43.71", function() {
-	console.log("listening on *:8080");
 });
