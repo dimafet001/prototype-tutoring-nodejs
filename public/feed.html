@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style>
+		body {
+			margin: 0;
+		}
+		.centered {
+			margin: 0 auto;
+		}
+		.standard {
+			width: 1000px;
+		}
+		.card {
+			display: flex;
+			width: 1000px;
+			height: 200px;
+			padding: 20px;
+			margin: 20px;
+			background: #ddd;
+			border-radius: 10px;
+		}
+
+		.flexitem {
+			position: relative;
+			padding-left: 40px;
+			line-height: 30px;
+			flex: 1 100%;
+		}
+
+		img {
+			width: 200px;
+			height: 200px;
+		}
+
+		#ask-button {
+			position: fixed;
+			right: 100px;
+			bottom: 50px;
+			border-radius: 10px;
+			/*width: 300px;*/
+			/*height: 100px;*/
+			padding: 30px 50px;
+			background: #fcc;
+			text-align: center;
+			vertical-align: center;
+			box-shadow: 2px 2px 5px rgba(200,200,200,.6);
+			font-size: 16px;
+			font-family: sans-serif;
+			color: #222;
+		}
+	</style>
+</head>
+<body>
+<div class="centered standard">
+	<div class="card">
+		<div style="width: 200px;"><img src="img/img1.jpg"/></div>
+		<div class="flexitem">
+			<div>Topic: Linear Algebra</div>
+			<div>Description:<br>    
+				<span style="margin-left: 2em">I can't understand this problem. Why is there sin instead of cos?</span></div>
+		</div>
+	</div>
+	<div class="card">
+		<div style="width: 200px;"><img src="img/img1.jpg"/></div>
+		<div class="flexitem">
+			<div>Topic: Statistics</div>
+			<div>Description:<br>    
+				<span style="margin-left: 2em">I don't undestand probability. Explain this formula please</span></div>
+		</div>
+	</div>
+	<div class="card">
+		<div style="width: 200px;"><img src="img/img1.jpg"/></div>
+		<div class="flexitem">
+			<div>Topic: Algebra</div>
+			<div>Description:<br>    
+				<span style="margin-left: 2em">Why do powers add when we multiple two numbers with the same base?</span></div>
+		</div>
+	</div>
+	<div class="card">
+		<div style="width: 200px;"><img src="img/img1.jpg"/></div>
+		<div class="flexitem">
+			<div>Topic: Geometry</div>
+			<div>Description:<br>    
+				<span style="margin-left: 2em">Why sum of all angles in a triangle is 180deg?</span></div>
+		</div>
+	</div>
+</div>
+<div id="ask-button">Ask a question</div>
+
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+	$(document).ready(() => {
+		$("#ask-button").click((e) => {
+			e.preventDefault()
+
+			// redirects to /question
+			window.location.href = "question"
+		})
+		$(".card").click((e) => {
+			window.location.href = "videocall"
+		})
+	})
+</script>
+</body>
+</html>

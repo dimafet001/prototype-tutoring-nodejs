@@ -19,6 +19,9 @@
   "homepage": "https://github.com/dimafet001/prototype-tutoring-nodejs#readme",
   "dependencies": {
     "express": "^4.17.0",
+    "express-session": "^1.16.1",
+    "html": "^1.0.0",
+    "nunjucks": "^3.2.0",
     "socket.io": "^2.2.0",
     "tls": "0.0.1"
   }

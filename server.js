@@ -3,24 +3,66 @@ const express = require("express");
 var https	  = require("https");
 
 var fs 		  = require("fs");
+var session   = require("express-session");
 const app	  = express();
 
 // static hosting using express
 app.use(express.static("public"));
-app.get('*', (req, res) => {
+
+// Parse URL-encoded bodies (as sent by HTML forms)
+// app.use(express.urlencoded());
+
+// Parse JSON bodies (as sent by API clients)
+app.use(express.json());
+
+// app.set('view engine', 'nunjucs')
+
+// videocall response
+app.get('/videocall', (req, res) => {
 	// console.log("I get smth")
   	// res.send('hello world')
-    // res.sendFile(__dirname + '/public/index.htm');  
+    res.sendFile(__dirname + '/public/videocall.html');  
 })
 
+app.get('/', (req, res) => {
+    res.sendFile(__dirname + '/public/index.html');  
+})
 
+app.get('/student', (req, res) => {
+    res.sendFile(__dirname + '/public/student.html');  
+    // req.session.cookie.isStudent = true;
+})
 
+app.get('/teacher', (req, res) => {
+    res.sendFile(__dirname + '/public/teacher.html');  
+    // req.session.cookie.isStudent = false;
+})
+
+app.get('/feed', (req, res) => {
+    res.sendFile(__dirname + '/public/feed.html');  
+})
+
+app.get('/question', (req, res) => {
+    res.sendFile(__dirname + '/public/question.html');  
+})
+
+app.get('/materials', (req, res) => {
+    res.sendFile(__dirname + '/public/materials.html');  
+})
+
+app.post('/ask', (req, res) => {
+	console.log("ask")
+	console.log(req.body.img);
+	console.log(req.body.topic);
+	console.log(req.body.desc);
+	res.redirect(307, '/feed');
+})
 
 var server = https.createServer({
     key: fs.readFileSync(__dirname + '/certs/server.key').toString(),
 	cert: fs.readFileSync(__dirname + '/certs/server.crt').toString() 
 	}, app)
-	.listen(8080, '192.168.0.15', () => {
+	.listen(8080, '0.0.0.0', () => {
 		console.log("running on 8080");
 	});
 

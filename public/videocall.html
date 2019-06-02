@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<head>
+	<title>WebRTC Video Conference</title>
+</head>
+<body>
+	<h1>Type "1" in the text field for both users. Turn down the volume because if you are trying it on the same computer 
+	the mic will pick up itself</h1>
+	<!--This is the div that contains the form for typing the room number -->
+	<div id="selectRoom">
+		<label>Type the room number</label>
+		<input id="roomNumber" type="text" />
+		<button id="goRoom">Go</button>
+	</div>
+
+	<!--This is the div that contains video streams-->
+	<div id="consultingRoom" style="display:none">
+		<video id="localVideo" autoplay></video>
+		<video id="remoteVideo" autoplay></video>
+	</div>
+
+	<!--These are the required js libraries-->
+	<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
+	<script src="/socket.io/socket.io.js"></script> <!-- I guess it loads itself because magic -->
+	<script src="client.js"></script>
+</body>

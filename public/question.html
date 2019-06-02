@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+<style>
+  body {
+    margin: 0;
+  }
+  form > div {
+    margin: 10px;
+  }
+  form {
+    width: 300px;
+    height: 100px;
+  }
+  .centered {
+    position: absolute;
+    left: calc(50% - 150px);
+    top: calc(50% - 50px);
+  }
+  #login-btn {
+    width: 100%;
+  }
+</style>
+</head>
+
+<body>
+What is your question?
+<div class="centered">
+<form action="/ask" method="post" enctype=multipart/form-data >
+  <div style="display: inline">
+    <label for="q_image">Image:</label>
+    <input type="file" multiple id="q_image" name="q_image"></input>
+  </div>
+  <div>
+    <label for="q_topic">Topic:</label>
+    <input id="q_topic" name="q_topic">
+  </div>
+  <div>
+    <label for="q_desc">Description:</label>
+    <input id="q_desc" name="q_desc"></input>
+  </div>
+  <div>
+    <input type="submit" name="login" value="Submit" id="login-btn"/>
+  </div>
+</form>
+<div>
+
+<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+<script type="text/javascript">
+  $(document).ready(function() {
+
+
+    $("#login-btn").click(function(e) {
+      e.preventDefault();
+    
+      // putting the data together
+      var data_str = "";
+
+      //TODO: Fix before launching tho
+
+
+      $.ajax({
+        beforeSend: function() {
+          // checking if forms are valid or should user change anything
+          // if ( !(emailIsValid($("input#email").val()) && $("input#password").val().length >= 8) ) {
+          //   alert("Your email is not valid or your password is too short");
+          //   return false;
+          //   //TODO: Make it prettier than alert
+          // }
+        },
+        contentType: 'application/json',
+        type: "POST",
+        url: "ask",
+        data: JSON.stringify({  img : $("input#q_image"). val(),
+                    topic : $("input#q_topic").val(),
+                    desc : $("input#q_desc").val()
+        })
+      })
+      .done(function (response) { 
+        console.log(response);
+        window.location.href = "feed";
+      }).fail(function (jqXHR, textStatus, errorThrown) { window.location.href = "feed"; });
+
+    });
+
+
+  });
+</script>
+
+</body>
+</html>

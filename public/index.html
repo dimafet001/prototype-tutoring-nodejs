@@ -1,24 +1,57 @@
-<!DOCTYPE html>
+<html>
 <head>
-	<title>WebRTC Video Conference</title>
+	<style>
+		body {
+			margin: 0;
+		}
+		.container {
+			display: flex;
+			background: #f8f8f8;
+			width: 100%;
+			height: 100%;
+			flex-flow: row nowrap; //default
+			justify-content: center;
+			align-items: stretch;
+		}
+		.child {
+			position: relative;
+			flex: 1 100%;
+		}
+		.child:nth-child(1) {
+			background: #eee;
+		}
+		#student-btn {
+			position: absolute;
+			width: 300px;
+			height: 80px;
+			right: 100px;
+			top: calc(50% - 50px);
+			border: 0;
+		}
+
+		#teacher-btn {
+			position: absolute;
+			width: 300px;
+			height: 80px;
+			left: 100px;
+			top: calc(50% - 50px);
+			border: 0;
+		}
+
+	</style>
 </head>
-<body
-	<h1>I hope it works</h1>
-	<!--This is the div that contains the form for typing the room number -->
-	<div id="selectRoom">
-		<label>Type the room number</label>
-		<input id="roomNumber" type="text" />
-		<button id="goRoom">Go</button>
+<body>
+<div class="container">
+	<div class="child">
+		<a href="student">
+		<input type="submit" name="student" value="Student" id="student-btn"/>
+		</a>
 	</div>
-
-	<!--This is the div that contains video streams-->
-	<div id="consultingRoom" style="display:none">
-		<video id="localVideo" autoplay></video>
-		<video id="remoteVideo" autoplay></video>
+	<div class="child">
+		<a href="teacher">
+		<input type="submit" name="teacher" value="Teacher" id="teacher-btn"/>
+		</a>
 	</div>
-
-	<!--These are the required js libraries-->
-	<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script>
-	<script src="/socket.io/socket.io.js"></script> <!-- I guess it loads itself because magic -->
-	<script src="client.js"></script>
+</div>
 </body>
+</html>
