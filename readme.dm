@@ -1,3 +1,14 @@
+This is a website for videocalls through webRTC. I used webRTC, socket.io, NodeJS, Express.
+
+It works in any browser, even on mobile phones.
+
+He is an example of me calling myself from different tabs.
+![](live.gif)
+
+
+If you want to launch it:
+	node server.js
+
 Before prod, cd cert -> openssl req -new -newkey rsa:2048 -nodes -out mydomain.csr -keyout private.key -> put keys locations into server.js
 
 If you update the hostname, it will only be secure if:
